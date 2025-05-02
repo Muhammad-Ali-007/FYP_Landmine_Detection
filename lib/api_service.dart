@@ -37,6 +37,7 @@ Future<List<Map<String, dynamic>>> uploadImages(List<XFile> imageFiles) async {
     return [];
   }
 }
+
 class ApiService {
   static const String baseUrl = 'http://127.0.0.1:5000/flutter';
 
