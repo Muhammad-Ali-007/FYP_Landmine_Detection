@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import './records_page.dart'; // Assuming this file exists and defines RecordsPage
-import './main.dart'; // Assuming this file defines the main app widget (e.g., MyApp or HomePage)
+// import './records_page.dart'; // Assuming this file exists and defines RecordsPage
+// import './main.dart'; // Assuming this file defines the main app widget (e.g., MyApp or HomePage)
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
