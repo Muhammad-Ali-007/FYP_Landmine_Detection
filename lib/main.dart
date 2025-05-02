@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'api_service.dart';
 import 'package:google_fonts/google_fonts.dart';  // Add this import
 import 'records_page.dart';
+import 'dashboard_page.dart';
 
 
 void main() {
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        textTheme: GoogleFonts.latoTextTheme(Theme.of(context).textTheme),  // Apply Google Font
+        textTheme: GoogleFonts.latoTextTheme(Theme.of(context).textTheme),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.blueAccent,
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const ImageUploadPage(),
+      home: const DashboardPage(), // Set Dashboard as home
     );
   }
 }
