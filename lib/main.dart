@@ -21,21 +21,20 @@ class MyApp extends StatelessWidget {
       title: 'Landmine Detection',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        textTheme: GoogleFonts.latoTextTheme(Theme.of(context).textTheme),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blueAccent,
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            textStyle: GoogleFonts.lato(fontSize: 16),
-          ),
+        textTheme: GoogleFonts.latoTextTheme(
+          Theme.of(context).textTheme,
+        ).copyWith(
+          // For backward compatibility
+          bodyLarge: GoogleFonts.lato(),
+          bodyMedium: GoogleFonts.lato(),
         ),
       ),
-      home: const DashboardPage(), // Set Dashboard as home
+      darkTheme: ThemeData.dark().copyWith(
+        textTheme: GoogleFonts.latoTextTheme(
+          Theme.of(context).textTheme,
+        ),
+      ),
+      home: const DashboardPage(),
     );
   }
 }
@@ -49,8 +48,18 @@ class ImageUploadPage extends StatefulWidget {
 
 class _ImageUploadPageState extends State<ImageUploadPage> {
   final ImagePicker _picker = ImagePicker();
-  List<Map<String, dynamic>> _imageResults = [];  // Updated to store additional data
+  List<Map<String, dynamic>> _imageResults = [];
   bool _isUploading = false;
+
+  // Color scheme matching dashboard
+  static const Color primaryDarkBlue = Color(0xFF0A1F3D);
+  static const Color secondaryBlue = Color(0xFF1A3A6A);
+  static const Color accentOrange = Color(0xFFFF6B35);
+  static const Color lightBackground = Color(0xFFF8F9FA);
+  static const Color cardWhite = Color(0xFFFFFFFF);
+  // static const Color textDark = Color(0xFF2D3748);
+  static const Color textLight = Color(0xFF718096);
+  static const Color successGreen = Color(0xFF38A169);
 
   Future<void> pickAndUploadImages() async {
     final List<XFile>? imageFiles = await _picker.pickMultiImage();
@@ -61,7 +70,7 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
       });
 
       try {
-        final results = await uploadImages(imageFiles);
+        final results = await ApiService.uploadImages(imageFiles);
 
         setState(() {
           _imageResults = results.map((result) {
@@ -75,7 +84,10 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
         });
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to upload images: $e')),
+          SnackBar(
+            content: Text('Failed to upload images: $e'),
+            backgroundColor: Colors.red[400],
+          ),
         );
       } finally {
         setState(() {
@@ -88,62 +100,121 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: lightBackground,
       appBar: AppBar(
-        title: Text('Landmine Detection', style: GoogleFonts.lato()),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              'logo-dark.png',
+              height: 30,
+              errorBuilder: (context, error, stackTrace) => 
+                  Icon(Icons.security, color: Colors.white),
+            ),
+            const SizedBox(width: 12),
+            Flexible(
+              child: Text(
+                'Landmine Detection',
+                style: GoogleFonts.lato(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
         centerTitle: true,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [primaryDarkBlue, secondaryBlue],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
       ),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Container(
             width: double.infinity,
-            constraints: const BoxConstraints(maxWidth: 600),
+            constraints: const BoxConstraints(maxWidth: 800),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
+              color: cardWhite,
+              borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
-                  spreadRadius: 4,
+                  color: Colors.black.withOpacity(0.1),
+                  spreadRadius: 2,
                   blurRadius: 8,
                   offset: const Offset(0, 4),
-                ),
+                )
               ],
             ),
             child: Padding(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.all(32.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    'Upload images for landmine detection',
+                    'Thermal Image Analysis',
                     style: GoogleFonts.lato(
-                      fontSize: 24,
+                      fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: Colors.blueGrey[800],
+                      color: primaryDarkBlue,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: pickAndUploadImages,
-                    child: const Text('Pick and Upload Images'),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Upload thermal images for landmine detection using our AI system',
+                    style: GoogleFonts.lato(
+                      fontSize: 16,
+                      color: textLight,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => RecordsPage()),
-                      );
-                    },
-                    child: const Text('View Detection Records'),
+                  const SizedBox(height: 40),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildActionButton(
+                        icon: Icons.upload_file,
+                        label: 'Upload Images',
+                        onPressed: pickAndUploadImages,
+                        color: accentOrange,
+                      ),
+                      const SizedBox(width: 20),
+                      _buildActionButton(
+                        icon: Icons.history,
+                        label: 'View Records',
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const RecordsPage()),
+                        ),
+                        color: secondaryBlue,
+                      ),
+                    ],
                   ),
+                  const SizedBox(height: 40),
                   if (_isUploading)
-                    const Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: CircularProgressIndicator(),
+                    Column(
+                      children: [
+                        const CircularProgressIndicator(),
+                        const SizedBox(height: 20),
+                        Text(
+                          'Analyzing thermal patterns...',
+                          style: GoogleFonts.lato(
+                            fontSize: 16,
+                            color: textLight,
+                          ),
+                        ),
+                      ],
                     ),
                   if (_imageResults.isNotEmpty)
                     Column(
@@ -151,36 +222,128 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
                         final imageBytes = result['image_bytes'] as Uint8List?;
                         final numMines = result['num_mines'] as int? ?? 0;
                         return Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Image.memory(
-                                  imageBytes!,
-                                  fit: BoxFit.contain,
+                          padding: const EdgeInsets.symmetric(vertical: 24),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: cardWhite,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 3),
+                                )
+                              ],
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.memory(
+                                    imageBytes!,
+                                    fit: BoxFit.contain,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Number of Mines: $numMines',
-                                style: GoogleFonts.lato(fontSize: 18, color: Colors.black87),
-                              ),
-                            ],
+                                const SizedBox(height: 16),
+                                Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: numMines > 0 
+                                        ? Colors.red.shade50 
+                                        : successGreen.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        numMines > 0 
+                                            ? Icons.warning_amber_rounded 
+                                            : Icons.check_circle,
+                                        color: numMines > 0 
+                                            ? Colors.red.shade700 
+                                            : successGreen,
+                                        size: 28,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Text(
+                                        numMines > 0
+                                            ? '$numMines potential landmine(s) detected'
+                                            : 'No landmines detected',
+                                        style: GoogleFonts.lato(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: numMines > 0 
+                                              ? Colors.red.shade700 
+                                              : successGreen,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       }).toList(),
                     ),
                   if (_imageResults.isEmpty && !_isUploading)
-                    Text(
-                      'No images selected',
-                      style: GoogleFonts.lato(fontSize: 18, color: Colors.grey[600]),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 40),
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.thermostat_auto,
+                            size: 80,
+                            color: Colors.grey.shade300,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Upload thermal images to begin analysis',
+                            style: GoogleFonts.lato(
+                              fontSize: 18,
+                              color: textLight,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                 ],
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+    required Color color,
+  }) {
+    return SizedBox(
+      width: 180,
+      child: ElevatedButton.icon(
+        icon: Icon(icon, size: 24),
+        label: Text(
+          label,
+          style: GoogleFonts.lato(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color,
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          elevation: 2,
+          shadowColor: Colors.black.withOpacity(0.2),
         ),
       ),
     );
