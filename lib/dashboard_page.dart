@@ -337,6 +337,7 @@ class _DashboardPageState extends State<DashboardPage> {
               _buildFeaturePoint('Real-time edge computing capabilities'),
               _buildFeaturePoint('Differential thermal pattern recognition'),
             ],
+
           ),
           const SizedBox(height: 16),
           Text(
