@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import './records_page.dart';
 import './main.dart' as main_file;
 import 'api_service.dart';
+import 'live_stream_page.dart';
 import 'video_detection.dart';
 
 
@@ -179,6 +180,15 @@ class _DashboardPageState extends State<DashboardPage> {
                 MaterialPageRoute(builder: (context) => const RecordsPage()),
               ),
             ),
+            ListTile(
+              leading: const Icon(Icons.live_tv, color: Colors.white),
+              title: Text('Live Detection', style: GoogleFonts.lato(color: Colors.white)),
+              tileColor: secondaryBlue.withOpacity(0.2),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LiveStreamPage()),
+              ),
+            ),
           ],
         ),
       ),
@@ -282,6 +292,16 @@ class _DashboardPageState extends State<DashboardPage> {
                         const SizedBox(width: 20),
                       ],
                     ),
+                    // ElevatedButton(
+                    //   onPressed: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(builder: (context) => const LiveStreamPage()),
+                    //     );
+                    //   },
+                    //   child: Text('Test Live Stream'),
+                    // ),
+
                   ],
                 ),
               ),
@@ -332,7 +352,7 @@ class _DashboardPageState extends State<DashboardPage> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildFeaturePoint('Multi-spectral thermal imaging (8-14µm range)'),
+              _buildFeaturePoint('Thermal imaging (8-14µm range)'),
               _buildFeaturePoint('YOLOv5 architecture with custom-trained CNN models'),
               _buildFeaturePoint('Real-time edge computing capabilities'),
               _buildFeaturePoint('Differential thermal pattern recognition'),
@@ -341,7 +361,7 @@ class _DashboardPageState extends State<DashboardPage> {
           ),
           const SizedBox(height: 16),
           Text(
-            'System achieves 96.9% mAP30 on validation dataset (n = 12,300 annotated thermal frames)',
+            'System achieves 96.9% mAP50 on validation dataset',
             style: GoogleFonts.lato(
               fontSize: 14,
               fontStyle: FontStyle.italic,
@@ -391,7 +411,6 @@ class _DashboardPageState extends State<DashboardPage> {
         'accuracy': 0.0,
       };
     }
-
     int totalMines = 0;
     int maxInOneImage = 0;
     double totalAccuracy = 0.0;

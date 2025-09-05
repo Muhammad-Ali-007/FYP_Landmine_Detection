@@ -17,7 +17,7 @@ class _RecordsPageState extends State<RecordsPage> {
   // Color scheme
   static const Color primaryDarkBlue = Color(0xFF0A1F3D);
   static const Color secondaryBlue = Color(0xFF1A3A6A);
-  static const Color accentOrange = Color(0xFFFF6B35);
+  // static const Color accentOrange = Color(0xFFFF6B35);
   static const Color lightBackground = Color(0xFFF8F9FA);
   static const Color cardWhite = Color(0xFFFFFFFF);
   static const Color textDark = Color(0xFF2D3748);
