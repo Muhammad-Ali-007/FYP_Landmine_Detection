@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'config.dart';
 
 class LiveStreamPage extends StatelessWidget {
   const LiveStreamPage({super.key});
 
-  static const String processedStreamUrl = 'http://127.0.0.1:5000/flutter/live_stream';
-  static const String originalStreamUrl = 'http://127.0.0.1:5000/flutter/live_original_stream';
+  static const String processedStreamUrl = '$apiBaseUrl/live_stream';
+  static const String originalStreamUrl = '$apiBaseUrl/live_original_stream';
 
   @override
   Widget build(BuildContext context) {

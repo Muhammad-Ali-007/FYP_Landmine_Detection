@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:video_player/video_player.dart';
 import 'package:image_picker/image_picker.dart';
@@ -82,7 +81,7 @@ class _VideoDetectionPageState extends State<VideoDetectionPage> {
 
     try {
       final result = await ApiService.processVideo(_inputVideo!);
-      print('Processing result: $result');
+      debugPrint('Processing result: $result');
 
       if (result['success'] == true && result['processed_path'] != null) {
         final processedFile = File(result['processed_path']);
@@ -107,7 +106,7 @@ class _VideoDetectionPageState extends State<VideoDetectionPage> {
         throw Exception(result['message'] ?? 'Video processing failed');
       }
     } catch (e) {
-      print('Processing error: $e');
+      debugPrint('Processing error: $e');
       setState(() {
         _processingStatus = 'Error: ${e.toString().replaceAll('Exception: ', '')}';
       });
@@ -152,6 +151,8 @@ class _VideoDetectionPageState extends State<VideoDetectionPage> {
   }
 
   bool _bothPlaying = false;
+  // Used by the (currently disabled) 'Play Both' button in build().
+  // ignore: unused_element
   void _toggleBothVideos() {
     if (_inputController != null && _processedController != null) {
       setState(() {

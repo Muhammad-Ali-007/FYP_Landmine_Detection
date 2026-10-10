@@ -1,13 +1,15 @@
 // lib/api_service.dart
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:http_parser/http_parser.dart'; // Add this import
+import 'package:http_parser/http_parser.dart';
+import 'config.dart';
 
  
 class ApiService {
-  static const String baseUrl = 'http://127.0.0.1:5000/flutter';
+  static const String baseUrl = apiBaseUrl;
 
   static Future<List<dynamic>> getRecords() async {
     final response = await http.get(Uri.parse('$baseUrl/records'));
@@ -21,7 +23,7 @@ class ApiService {
 
   static Future<Map<String, dynamic>> processVideo(File videoFile) async {
     final uri = Uri.parse('$baseUrl/process_video');
-    print('Starting video processing for: ${videoFile.path}');
+    debugPrint('Starting video processing for: ${videoFile.path}');
 
     try {
       // Verify file exists
@@ -37,7 +39,7 @@ class ApiService {
           contentType: MediaType('video', '*'),
         ));
 
-      print('Sending video to API...');
+      debugPrint('Sending video to API...');
       final response = await request.send();
 
       // Handle response
@@ -66,13 +68,13 @@ class ApiService {
         throw Exception('API Error ${response.statusCode}: $error');
       }
     } catch (e) {
-      print('Video processing error: $e');
+      debugPrint('Video processing error: $e');
       rethrow;
     }
   }
 
 static Future<List<Map<String, dynamic>>> uploadImages(List<XFile> imageFiles) async {
-  final uri = Uri.parse('http://127.0.0.1:5000/flutter/upload');
+  final uri = Uri.parse('$baseUrl/upload');
 
   try {
     final request = http.MultipartRequest('POST', uri);
@@ -104,7 +106,7 @@ static Future<List<Map<String, dynamic>>> uploadImages(List<XFile> imageFiles) a
       throw Exception(errorData['message'] ?? 'Upload failed with status ${response.statusCode}');
     }
   } catch (e) {
-    print('Upload Error: $e');
+    debugPrint('Upload Error: $e');
     rethrow;
   }
 }
