@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.ipynb_checkpoints/
+
+# Data and model artefacts (download the dataset from Roboflow, weights from the GitHub release)
+data/raw/
+datasets/
+*.pt
+*.pth
+*.onnx
+*.engine
+*.zip
+*.rar
+*.npy
+*.cache
+runs/
+outputs/
+backend/static/
+backend/models/
+
+# Large media
+*.mp4
+*.avi
+*.mov
+
+# Editors / OS
+.idea/
+.vscode/
+.qodo/
+.DS_Store
+Thumbs.db
